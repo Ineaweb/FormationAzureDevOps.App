@@ -28,7 +28,8 @@ stages:
 - stage: deploy_DEV
   displayName: deploy to DEV
   variables:
-  - group: DEV Configuration  
+  - group: DEV Configuration
+  - group: Global Configuration  
   dependsOn: build
   jobs:
   - deployment: DeployAzFunction
@@ -44,13 +45,13 @@ stages:
             artifact: App
           - task: AzureAppServiceManage@0
             inputs:
-              azureSubscription: 'AzureServiceConnection'
+              azureSubscription: '$(AzureConnectionName)'
               Action: 'Stop Azure App Service'
               WebAppName: '$(System.TeamProject)-app-dev-we-func'
           - task: AzureFunctionApp@1
             displayName: 'Azure App Service Deploy: $(System.TeamProject)-app-dev-we-func'
             inputs:
-              azureSubscription: AzureServiceConnection
+              azureSubscription: $(AzureConnectionName)
               appType: functionApp
               appName: '$(System.TeamProject)-app-dev-we-func'
               package: '$(Pipeline.Workspace)/**/*.zip'
@@ -58,13 +59,14 @@ stages:
               deploymentMethod: auto
           - task: AzureAppServiceManage@0
             inputs:
-              azureSubscription: 'AzureServiceConnection'
+              azureSubscription: '$(AzureConnectionName)'
               Action: 'Start Azure App Service'
               WebAppName: '$(System.TeamProject)-app-dev-we-func'
 - stage: deploy_UAT
   displayName: deploy to UAT
   variables:
-  - group: UAT Configuration  
+  - group: UAT Configuration
+  - group: Global Configuration  
   dependsOn: deploy_DEV
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/release')
   jobs:
@@ -81,13 +83,13 @@ stages:
             artifact: App
           - task: AzureAppServiceManage@0
             inputs:
-              azureSubscription: 'AzureServiceConnection'
+              azureSubscription: '$(AzureConnectionName)'
               Action: 'Stop Azure App Service'
               WebAppName: '$(System.TeamProject)-app-uat-we-func'                   
           - task: AzureFunctionApp@1
             displayName: 'Azure App Service Deploy: $(System.TeamProject)-app-uat-we-func'
             inputs:
-              azureSubscription: AzureServiceConnection
+              azureSubscription: $(AzureConnectionName)
               appType: functionApp
               appName: '$(System.TeamProject)-app-uat-we-func'
               package: '$(Pipeline.Workspace)/**/*.zip'
@@ -95,6 +97,6 @@ stages:
               deploymentMethod: auto
           - task: AzureAppServiceManage@0
             inputs:
-              azureSubscription: 'AzureServiceConnection'
+              azureSubscription: '$(AzureConnectionName)'
               Action: 'Start Azure App Service'
               WebAppName: '$(System.TeamProject)-app-uat-we-func'     
