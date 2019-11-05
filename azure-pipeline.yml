@@ -44,23 +44,23 @@ stages:
             artifact: App
           - task: AzureAppServiceManage@0
             inputs:
-              azureSubscription: 'PMOAzure'
+              azureSubscription: 'AzureServiceConnection'
               Action: 'Stop Azure App Service'
-              WebAppName: 'op01-app-dev-we-func'
+              WebAppName: '$(System.TeamProject)-app-dev-we-func'
           - task: AzureFunctionApp@1
-            displayName: 'Azure App Service Deploy: op01-app-dev-we-func'
+            displayName: 'Azure App Service Deploy: $(System.TeamProject)-app-dev-we-func'
             inputs:
-              azureSubscription: PMOAzure
+              azureSubscription: AzureServiceConnection
               appType: functionApp
-              appName: 'op01-app-dev-we-func'
+              appName: '$(System.TeamProject)-app-dev-we-func'
               package: '$(Pipeline.Workspace)/**/*.zip'
               AppSettings: '-APPINSIGHTS_INSTRUMENTATIONKEY "$(appinsightInstrumentationKey)" -AppStorageKey "$(storageaccountAppKey)" -AppStorageName "$(storageaccountAppName)" -AzureWebJobsStorage "$(storageaccountAppConnectionstring)" -FUNCTIONS_EXTENSION_VERSION ~2 -ServiceBusConnectionString01 "$(servicebusFunc01AutorizationConnectionString)" -ServiceBusConnectionString02 "$(servicebusFunc02AutorizationConnectionString)" -WEBSITE_CONTENTAZUREFILECONNECTIONSTRING "$(storageaccountAppConnectionstring)" -WEBSITE_CONTENTSHARE "appformation"'
               deploymentMethod: auto
           - task: AzureAppServiceManage@0
             inputs:
-              azureSubscription: 'PMOAzure'
+              azureSubscription: 'AzureServiceConnection'
               Action: 'Start Azure App Service'
-              WebAppName: 'op01-app-dev-we-func'
+              WebAppName: '$(System.TeamProject)-app-dev-we-func'
 - stage: deploy_UAT
   displayName: deploy to UAT
   variables:
@@ -81,20 +81,20 @@ stages:
             artifact: App
           - task: AzureAppServiceManage@0
             inputs:
-              azureSubscription: 'PMOAzure'
+              azureSubscription: 'AzureServiceConnection'
               Action: 'Stop Azure App Service'
-              WebAppName: 'op01-app-uat-we-func'                   
+              WebAppName: '$(System.TeamProject)-app-uat-we-func'                   
           - task: AzureFunctionApp@1
-            displayName: 'Azure App Service Deploy: op01-app-uat-we-func'
+            displayName: 'Azure App Service Deploy: $(System.TeamProject)-app-uat-we-func'
             inputs:
-              azureSubscription: PMOAzure
+              azureSubscription: AzureServiceConnection
               appType: functionApp
-              appName: 'op01-app-uat-we-func'
+              appName: '$(System.TeamProject)-app-uat-we-func'
               package: '$(Pipeline.Workspace)/**/*.zip'
               AppSettings: '-APPINSIGHTS_INSTRUMENTATIONKEY "$(appinsightInstrumentationKey)" -AppStorageKey "$(storageaccountAppKey)" -AppStorageName "$(storageaccountAppName)" -AzureWebJobsStorage "$(storageaccountAppConnectionstring)" -FUNCTIONS_EXTENSION_VERSION ~2 -ServiceBusConnectionString01 "$(servicebusFunc01AutorizationConnectionString)" -ServiceBusConnectionString02 "$(servicebusFunc02AutorizationConnectionString)" -WEBSITE_CONTENTAZUREFILECONNECTIONSTRING "$(storageaccountAppConnectionstring)" -WEBSITE_CONTENTSHARE "appformation"'
               deploymentMethod: auto
           - task: AzureAppServiceManage@0
             inputs:
-              azureSubscription: 'PMOAzure'
+              azureSubscription: 'AzureServiceConnection'
               Action: 'Start Azure App Service'
-              WebAppName: 'op01-app-uat-we-func'     
+              WebAppName: '$(System.TeamProject)-app-uat-we-func'     
